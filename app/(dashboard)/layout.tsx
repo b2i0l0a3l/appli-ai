@@ -10,6 +10,7 @@ import { ThemeProvider } from "@/components/providers/theme-provider";
 import Navbar from "@/components/layout/navbar/Navbar";
 import SideBarHeader from "@/components/layout/side-bar-header";
 import { Toaster } from "sonner";
+import Footer from "@/components/layout/footer";
 
 const inter = Inter({subsets:['latin'],variable:'--font-sans'});
 
@@ -44,10 +45,13 @@ export default function DashboardLayout({
             <TooltipProvider>
               <SidebarProvider>
                 <AppSidebar />
-                <SidebarInset>
+                <SidebarInset className="flex flex-col min-h-screen">
                  <SideBarHeader/>
                   <main className="flex flex-1 flex-col gap-4 p-4">
-                    {children}
+                    <div className="flex-1">
+                      {children}
+                    </div>
+                    <Footer />
                     <Toaster/>
                   </main>
     
