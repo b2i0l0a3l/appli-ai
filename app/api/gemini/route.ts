@@ -1,0 +1,24 @@
+import { GoogleGenAI } from "@google/genai";
+import { NextResponse } from "next/server";
+
+const ai = new GoogleGenAI({});
+
+export async function POST(req: Request) {
+  try {
+    const { prompt , payload } = await req.json();
+
+    if (!prompt || !payload) {
+      return NextResponse.json({ error: "Prompt is required" }, { status: 400 });
+    }
+
+    const response = await ai.models.generateContent({
+      model: "gemini-2.5-flash",
+      contents: prompt,
+    }); 
+
+    return NextResponse.json({ text: response.text });
+  } catch (error) {
+    console.error("Gemini API Error:", error);
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+  }
+}

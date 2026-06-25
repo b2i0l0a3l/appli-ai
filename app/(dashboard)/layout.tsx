@@ -9,6 +9,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import Navbar from "@/components/layout/navbar/Navbar";
 import SideBarHeader from "@/components/layout/side-bar-header";
+import { Toaster } from "sonner";
 
 const inter = Inter({subsets:['latin'],variable:'--font-sans'});
 
@@ -47,7 +48,9 @@ export default function DashboardLayout({
                  <SideBarHeader/>
                   <main className="flex flex-1 flex-col gap-4 p-4">
                     {children}
+                    <Toaster/>
                   </main>
+    
                 </SidebarInset>
               </SidebarProvider>
             </TooltipProvider>

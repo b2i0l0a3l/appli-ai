@@ -1,0 +1,61 @@
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Users{
+    id String @id @default(uuid())
+    email String @unique
+    name String
+    CreatedAt DateTime @default(now())
+
+    @@index([email])
+
+    Applications Applications[]
+}
+model Applications{
+    id String @id @default(uuid())
+    user_id String
+    job_title String
+    company_name String
+    job_description String
+    language String
+    match_score Float 
+    created_at DateTime @default(now())
+    user Users @relation(fields: [user_id],references: [id])
+    @@index([company_name])
+    @@index([job_title])
+    @@index([created_at])
+
+    cv_analyse CvAnalyse[]
+    generated_letters GeneratedLetters[]
+}
+model CvAnalyse{
+    id String @id @default(uuid())
+    application_id String
+    extracted_skills Json?
+    extracted_projects Json?
+    extracted_experience Json?
+    cv_file_url String?
+    Applicaion Applications @relation(fields: [application_id],references: [id])
+
+    @@index([application_id])
+}
+model GeneratedLetters{
+    id String @id @default(uuid())
+    application_id String
+    content String
+    language String
+    generated_at DateTime @default(now())
+    last_update DateTime @updatedAt
+    Applicaion Applications @relation(fields: [application_id],references: [id])
+    
+    @@index([application_id])
+    @@index([generated_at])
+
+}

@@ -1,8 +1,7 @@
 import DashboardContainer from "@/components/layout/DashboardContainer";
 import UploadFile from "./upload-file";
 import JobDetails from "./job-details";
-import { Button } from "@/components/ui/button";
-import { Sparkles } from "lucide-react";
+import GenerateApplicationButton from "./generateApplicationButton";
 
 export default function DashboardClient(){
     return(
@@ -12,7 +11,7 @@ export default function DashboardClient(){
                 <JobDetails/>
             </div>
             <div className="w-full flex items-center justify-center py-10">
-                <Button  className="text-lg px-10 py-6  cursor-pointer " type="button" variant={"outline"}>Generate Application <Sparkles size={10} /></Button>
+                <GenerateApplicationButton/>
             </div>
         </DashboardContainer>
     )

@@ -5,16 +5,43 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
+export const urlPattern   = /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?(\?.*)?$/i;
 
-export function isValidFile({file}:{file:FileList|null}){
-    if(!file || file.length === 0) return; 
-    const selectedFile = file[0];
-    const allowdExtension = [".pdf",".docx"];
-    const isAllowed = allowdExtension.some(x=> selectedFile.name.endsWith(x));
-    if(!isAllowed){
-      return false;
-    }
-    return true;
+
+export function customDate(date : Date){
+  return date.toLocaleDateString("dd/mm/yyy");
 }
 
-export const urlPattern   = /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?(\?.*)?$/i;
+
+export function debounce<T extends (...args: any[]) => any>(
+  func: T,
+  delay: number
+): (...args: Parameters<T>) => void {
+  let timeoutId: ReturnType<typeof setTimeout> | null = null;
+
+  return (...args: Parameters<T>) => {
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+    }
+
+    timeoutId = setTimeout(() => {
+      func(...args);
+    }, delay);
+  };
+}
+
+export function convertFileToBase64(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const fileReader = new FileReader();
+    
+    fileReader.readAsDataURL(file);
+
+    fileReader.onload = () => {
+      resolve(fileReader.result as string);
+    };
+
+    fileReader.onerror = (error) => {
+      reject(error);
+    };
+  });
+}
