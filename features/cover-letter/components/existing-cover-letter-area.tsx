@@ -174,7 +174,7 @@ export default function ExistingCoverLetterArea({id}: {id: string}) {
               console.error("Autosave failed after suggestion apply");
               setSaveStatus("idle");
               toast.error("Failed to sync applied suggestion to database");
-            });
+            }); 
         }
         toast.success("Applied suggestion to cover letter!");
       } else {
