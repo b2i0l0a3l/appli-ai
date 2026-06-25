@@ -6,7 +6,7 @@ import { useState } from "react";
 import axios from "axios";
 import { toast } from "sonner";
 import { convertFileToBase64 } from "@/lib/utils";
-import { geminiPrompt } from "@/lib/prompts";
+import { geminiPrompt, geminiResponse } from "@/lib/prompts";
 
 import { useRouter } from "next/navigation";
 import { saveGeneratedApplication } from "@/app/actions/application.actions";
@@ -17,6 +17,7 @@ export default function GenerateApplicationButton(){
     const Description = useApplicationStore((state)=>state.description);
     const value = useApplicationStore((state)=>state.job_url);
     const  file = useApplicationStore((state)=>state.file);
+    const  clear = useApplicationStore((state)=>state.clear);
 
 
     const generate = async ()=>{
@@ -25,7 +26,6 @@ export default function GenerateApplicationButton(){
         setIsLoading(false);
         return toast.error("Please Upload Csv, Pdf, Doc and fill all the fields");
       } 
-      console.log("Starting ....."); 
 
       try{
 
@@ -40,8 +40,9 @@ export default function GenerateApplicationButton(){
           payload: payload,
         });
         
-        const geminiResult = res.data.data;
-        if (!geminiResult) {
+        const geminiResult: geminiResponse = res.data;
+
+        if (!geminiResult) { 
           throw new Error("Invalid response from AI assistant");
         }
 
@@ -51,7 +52,7 @@ export default function GenerateApplicationButton(){
           companyName: geminiResult.job_data?.company || "Unknown Company",
           jobTitle: geminiResult.job_data?.position || "Unknown Position",
           jobDescription: Description,
-          language: "en",
+          language: geminiResult.cover_letter_language_iso || "en",
           matchScore: geminiResult.analysis?.match_score || 0,
           cvData: {
             skills: geminiResult.cv_data?.skills || [],
@@ -63,7 +64,7 @@ export default function GenerateApplicationButton(){
 
         if (dbRes.success) {
           toast.success("Application created successfully!");
-          useApplicationStore.setState({ file: undefined, job_url: "", description: "" });
+          clear();
           router.push(`/cover-letter?applicationId=${dbRes.applicationId}`);
         }
  

@@ -5,13 +5,11 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-export const urlPattern   = /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?(\?.*)?$/i;
-
+export const urlPattern = /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?(\?.*)?$/i;
 
 export function customDate(date : Date){
   return date.toLocaleDateString("dd/mm/yyy");
 }
-
 
 export function debounce<T extends (...args: any[]) => any>(
   func: T,

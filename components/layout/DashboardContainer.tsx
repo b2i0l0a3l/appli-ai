@@ -9,7 +9,7 @@ export default function DashboardContainer({children, className, title, descript
   return (
     <div className="w-full h-full px-6 py-6">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold tracking-tight text-foreground">{title}</h1>
+        <h1 className="text-3xl font-bold tracking-tight text-foreground">{title}</h1>
         <p className="mt-1 text-sm text-muted-foreground">{description}</p>
       </div>
       <div className={cn("", className)}>

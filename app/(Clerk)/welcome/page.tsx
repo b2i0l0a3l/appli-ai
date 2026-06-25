@@ -15,7 +15,7 @@ export default async function WelcomePage() {
   if (email) {
     const existingUser = await prisma.users.findUnique({ where: { email } });
     if (existingUser) redirect("/dashboard");
-  }
+  } 
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-4">

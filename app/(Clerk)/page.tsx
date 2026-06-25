@@ -1,7 +1,7 @@
-export default function page(){
-    return (
-        <div>
-            <h1>landing page</h1>
-        </div>
-    )
+import LandingClient from "@/features/landing/components/landing-client";
+
+export default function LandingPage() {
+  return (
+    <LandingClient/>
+  );
 }

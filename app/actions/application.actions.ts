@@ -4,6 +4,14 @@ import { currentUser } from "@clerk/nextjs/server";
 import prisma from "@/lib/db";
 import { revalidatePath } from "next/cache";
 
+async function FindUser(userId : string){
+  return await prisma.users.findUnique({
+    where: { id: userId },
+  });
+
+}
+
+
 export async function saveGeneratedApplication(data: {
   companyName: string;
   jobTitle: string;
@@ -22,13 +30,9 @@ export async function saveGeneratedApplication(data: {
     throw new Error("Unauthorized");
   }
 
-  // Ensure the user exists in our local database first
-  const dbUser = await prisma.users.findUnique({
-    where: { id: user.id },
-  });
+  const dbUser = FindUser(user.id);
 
   if (!dbUser) {
-    // If not found by ID (Clerk ID), upsert by email
     const email = user.emailAddresses[0]?.emailAddress;
     if (!email) throw new Error("User email not found");
 
@@ -44,7 +48,6 @@ export async function saveGeneratedApplication(data: {
   }
 
   try {
-    // Create the Application record along with CvAnalyse and GeneratedLetters in a transaction
     const application = await prisma.applications.create({
       data: {
         user_id: user.id,
@@ -71,10 +74,10 @@ export async function saveGeneratedApplication(data: {
 
     revalidatePath("/applications");
     revalidatePath("/dashboard");
-
+ 
     return { success: true, applicationId: application.id };
   } catch (error) {
-    console.error("Error saving application:", error);
+    console.error("Error saving application");
     throw new Error("Failed to save application to database");
   }
 }
@@ -84,7 +87,6 @@ export async function updateGeneratedLetter(applicationId: string, content: stri
   if (!user) throw new Error("Unauthorized");
 
   try {
-    // First, verify the application belongs to this user
     const app = await prisma.applications.findUnique({
       where: { id: applicationId },
       select: { user_id: true },
@@ -94,7 +96,6 @@ export async function updateGeneratedLetter(applicationId: string, content: stri
       throw new Error("Access denied or application not found");
     }
 
-    // Update or create the generated letter
     const letter = await prisma.generatedLetters.findFirst({
       where: { application_id: applicationId },
     });
@@ -109,14 +110,14 @@ export async function updateGeneratedLetter(applicationId: string, content: stri
         data: {
           application_id: applicationId,
           content,
-          language: "en", // default or dynamically look up from app
+          language: "en", 
         },
       });
     }
 
     return { success: true };
   } catch (error) {
-    console.error("Error updating cover letter:", error);
+    console.error("Error updating cover letter");
     throw new Error("Failed to save cover letter changes");
   }
 }
@@ -131,7 +132,7 @@ export async function getUserApplications() {
       orderBy: { created_at: "desc" },
     });
   } catch (error) {
-    console.error("Error fetching applications:", error);
+    console.error("Error fetching applications");
     return [];
   }
 }
@@ -160,7 +161,36 @@ export async function getCoverLetter(applicationId: string) {
       letter: app.generated_letters[0] || null,
     };
   } catch (error) {
-    console.error("Error fetching cover letter:", error);
+    console.error("Error fetching cover letter" );
     throw new Error("Failed to fetch cover letter data");
   }
 }
+
+export async function getUserCoverLetters() {
+  const user = await currentUser();
+  if (!user) return [];
+
+  try {
+    return await prisma.applications.findMany({
+      where: {
+        user_id: user.id,
+        generated_letters: {
+          some: {}
+        }
+      },
+      include: {
+        generated_letters: {
+          orderBy: { generated_at: "desc" },
+          take: 1
+        }
+      },
+      orderBy: {
+        created_at: "desc"
+      }
+    });
+  } catch (error) {
+    console.error("Error fetching user cover letters");
+    return [];
+  }
+}
+
