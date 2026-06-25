@@ -65,7 +65,7 @@ export default function GenerateApplicationButton(){
         if (dbRes.success) {
           toast.success("Application created successfully!");
           clear();
-          router.push(`/cover-letter?applicationId=${dbRes.applicationId}`);
+          router.push(`/cover-letter/${dbRes.applicationId}`);
         }
  
       }catch(error: any){
