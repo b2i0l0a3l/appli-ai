@@ -30,7 +30,7 @@ export async function saveGeneratedApplication(data: {
     throw new Error("Unauthorized");
   }
 
-  const dbUser = FindUser(user.id);
+  const dbUser = await FindUser(user.id);
 
   if (!dbUser) {
     const email = user.emailAddresses[0]?.emailAddress;

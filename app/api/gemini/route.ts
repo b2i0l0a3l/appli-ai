@@ -77,7 +77,6 @@ Job Description: ${payload.job_description || ""}`;
     try {
       rawText = await callGemini(body);
     } catch (geminiError: any) {
-      const status = geminiError?.status || geminiError?.response?.status;
 
       try {
         rawText = await callGroq(body);
