@@ -1,11 +1,11 @@
 import Hero from "./hero";
 import dynamic from "next/dynamic";
-import GetStart from "./get-start";
 
 const Footer = dynamic(() => import("./footer"), {loading: () => <div></div>});
 const Feature = dynamic(() => import("./feature"), {loading: () => <div></div>});
 const Detail = dynamic(() => import("./details"), {loading: () => <div></div>});
 const Review = dynamic(() => import("./review"), {loading: () => <div></div>});
+const GetStart = dynamic(() => import("./get-start"), {loading: () => <div></div>});
 
 export default function LandingClient() {
     return (
